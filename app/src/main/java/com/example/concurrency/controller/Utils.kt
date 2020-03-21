@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.google.gson.Gson
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class Utils {
     companion object {
@@ -27,6 +29,14 @@ class Utils {
         @JvmStatic
         fun <T> parseJson(json: String?, modelClass: Class<T>?): T {
             return Gson().fromJson(json, modelClass)
+        }
+
+        @JvmStatic
+        fun round(value: Double, decimalPoint: Int): Double {
+            require(decimalPoint >= 0)
+            var bigDecimal = BigDecimal.valueOf(value)
+            bigDecimal = bigDecimal.setScale(decimalPoint, RoundingMode.HALF_UP)
+            return bigDecimal.toDouble()
         }
     }
 }
