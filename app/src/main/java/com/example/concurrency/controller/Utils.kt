@@ -3,6 +3,7 @@ package com.example.concurrency.controller
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.google.gson.Gson
 
 class Utils {
     companion object {
@@ -21,6 +22,11 @@ class Utils {
                 networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
                 else -> false
             }
+        }
+
+        @JvmStatic
+        fun <T> parseJson(json: String?, modelClass: Class<T>?): T {
+            return Gson().fromJson(json, modelClass)
         }
     }
 }
