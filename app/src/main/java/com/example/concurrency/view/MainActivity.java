@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.concurrency.R;
+import com.example.concurrency.model.CurrencyMarketDataModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static com.example.concurrency.controller.Utils.parseJson;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String response) {
             Log.d("RESPONSE", response);
+            CurrencyMarketDataModel marketData = parseJson(response, CurrencyMarketDataModel.class);
         }
     }
 }
