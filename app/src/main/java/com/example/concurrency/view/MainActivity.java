@@ -18,8 +18,6 @@ import com.example.concurrency.model.LiveDataTimerViewModel;
 import com.example.concurrency.view.recyclerView.MarginItemDecoration;
 import com.example.concurrency.view.recyclerView.currency.CurrencyRecyclerViewAdapter;
 
-import static com.example.concurrency.controller.Utils.isNetworkAvailable;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -55,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void subscribe(LiveDataTimerViewModel liveDataTimerViewModel) {
         final Observer<Long> elapsedTimeObserver = timeInSeconds -> {
-            if (isNetworkAvailable(MainActivity.this)) {
-                (new MarketDataAsyncTask()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GBP");
-            }
+            
         };
 
         liveDataTimerViewModel.getElapsedTime().observe(this, elapsedTimeObserver);
