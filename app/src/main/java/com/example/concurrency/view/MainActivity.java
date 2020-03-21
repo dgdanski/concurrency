@@ -3,11 +3,15 @@ package com.example.concurrency.view;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.concurrency.R;
 import com.example.concurrency.model.CurrencyMarketDataModel;
+import com.example.concurrency.model.LiveDataTimerViewModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.example.concurrency.controller.Utils.isNetworkAvailable;
 import static com.example.concurrency.controller.Utils.parseJson;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,9 +30,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LiveDataTimerViewModel liveDataTimerViewModel = new ViewModelProvider(this).get(LiveDataTimerViewModel.class);
+        subscribe(liveDataTimerViewModel);
     }
 
-    private static class MarketDataAsyncTask extends AsyncTask<String, String, String> {
+    private void subscribe(LiveDataTimerViewModel liveDataTimerViewModel) {
+        final Observer<Long> elapsedTimeObserver = timeInSeconds -> {
+            if (isNetworkAvailable(MainActivity.this)) {
+                (new MarketDataAsyncTask()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GBP");
+            }
+        };
+
+        liveDataTimerViewModel.getElapsedTime().observe(this, elapsedTimeObserver);
+    }
+
+    private class MarketDataAsyncTask extends AsyncTask<String, String, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -54,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String response) {
             Log.d("RESPONSE", response);
             CurrencyMarketDataModel marketData = parseJson(response, CurrencyMarketDataModel.class);
+            ((TextView) findViewById(R.id.hello)).setText(marketData.getBaseCurrency() + " -> " + marketData.getRates().entrySet().toArray()[0].toString());
         }
     }
 }
