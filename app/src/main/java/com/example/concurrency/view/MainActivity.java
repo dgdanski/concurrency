@@ -3,6 +3,7 @@ package com.example.concurrency.view;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String response) {
             Log.d("RESPONSE", response);
             CurrencyMarketDataModel marketData = parseJson(response, CurrencyMarketDataModel.class);
+            ((TextView) findViewById(R.id.hello)).setText(marketData.getBaseCurrency() + " -> " + marketData.getRates().entrySet().toArray()[0].toString());
         }
     }
 }
