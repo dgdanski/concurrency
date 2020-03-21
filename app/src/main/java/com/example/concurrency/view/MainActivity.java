@@ -1,8 +1,10 @@
-package com.example.concurrency;
+package com.example.concurrency.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.concurrency.R;
 
 public class MainActivity extends AppCompatActivity {
 
