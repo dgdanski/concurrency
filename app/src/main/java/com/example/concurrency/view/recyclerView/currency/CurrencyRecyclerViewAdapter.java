@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.concurrency.R;
+import com.example.concurrency.controller.Utils;
 import com.example.concurrency.model.CurrencyMarketDataWrapper;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,7 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
     private ItemClickListener mClickListener;
     private LinkedList<Map.Entry<String, Double>> ratesList = new LinkedList<>();
     private RecyclerView recyclerView;
+    private Context context;
 
     // data is passed into the constructor
     public CurrencyRecyclerViewAdapter(Context context, CurrencyMarketDataWrapper currencyMarketDataWrapper, RecyclerView recyclerView) {
@@ -33,6 +35,7 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         HashMap<String, Double> rates = currencyMarketDataWrapper.getAllRates();
         ratesList.addAll(rates.entrySet());
         this.recyclerView = recyclerView;
+        this.context = context;
     }
 
     // inflates the row layout from xml when needed
@@ -85,6 +88,7 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         @Override
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            Utils.hideKeyboard((Activity) context);
             moveItemToTop(getAdapterPosition());
         }
     }
