@@ -72,6 +72,7 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
             currencyTickerTextView = itemView.findViewById(R.id.currency_ticker_text_view);
             currencyFullNameTextView = itemView.findViewById(R.id.currency_full_name_text_view);
             currencyValueEditText = itemView.findViewById(R.id.currency_value_edit_text);
+            currencyValueEditText.setOnFocusChangeListener((view, hasFocus) -> onClick(view));
             itemView.setOnClickListener(this);
             this.recyclerView = recyclerView;
         }
