@@ -91,7 +91,18 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
             Utils.hideKeyboard((Activity) context);
+            clearFocusOfTheFirstItem();
             moveItemToTop(getAdapterPosition());
+
+        }
+    }
+
+    private void clearFocusOfTheFirstItem() {
+        if (recyclerView.getLayoutManager() != null) {
+            View currentFirstItem = recyclerView.getLayoutManager().findViewByPosition(0);
+            if (currentFirstItem != null) {
+                currentFirstItem.clearFocus();
+            }
         }
     }
 
