@@ -72,7 +72,12 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
             currencyTickerTextView = itemView.findViewById(R.id.currency_ticker_text_view);
             currencyFullNameTextView = itemView.findViewById(R.id.currency_full_name_text_view);
             currencyValueEditText = itemView.findViewById(R.id.currency_value_edit_text);
-            currencyValueEditText.setOnFocusChangeListener((view, hasFocus) -> onClick(view));
+            currencyValueEditText.setOnFocusChangeListener((view, hasFocus) -> {
+                int currentPosition = getAdapterPosition();
+                if (currentPosition != 0 && !recyclerView.isComputingLayout()) {
+                    moveItemToTop(currentPosition);
+                }
+            });
             itemView.setOnClickListener(this);
             this.recyclerView = recyclerView;
         }
@@ -80,13 +85,16 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         @Override
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-            int position = getAdapterPosition();
-            Map.Entry<String, Double> removedItem = ratesList.get(position);
-            ratesList.remove(position);
-            ratesList.add(0, removedItem);
-            notifyItemMoved(position, 0);
-            recyclerView.scrollToPosition(0);
+            moveItemToTop(getAdapterPosition());
         }
+    }
+
+    private void moveItemToTop(int itemCurrentPosition) {
+        Map.Entry<String, Double> removedItem = ratesList.get(itemCurrentPosition);
+        ratesList.remove(itemCurrentPosition);
+        ratesList.add(0, removedItem);
+        notifyItemMoved(itemCurrentPosition, 0);
+        recyclerView.scrollToPosition(0);
     }
 
     // convenience method for getting data at click position
