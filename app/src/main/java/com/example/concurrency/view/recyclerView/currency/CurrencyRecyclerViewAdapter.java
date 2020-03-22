@@ -25,12 +25,14 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private LinkedList<Map.Entry<String, Double>> ratesList = new LinkedList<>();
+    private RecyclerView recyclerView;
 
     // data is passed into the constructor
-    public CurrencyRecyclerViewAdapter(Context context, CurrencyMarketDataWrapper currencyMarketDataWrapper) {
+    public CurrencyRecyclerViewAdapter(Context context, CurrencyMarketDataWrapper currencyMarketDataWrapper, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         HashMap<String, Double> rates = currencyMarketDataWrapper.getAllRates();
         ratesList.addAll(rates.entrySet());
+        this.recyclerView = recyclerView;
     }
 
     // inflates the row layout from xml when needed
@@ -38,7 +40,7 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.currency_recycler_view_single_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, recyclerView);
     }
 
     // binds the data to the TextView in each row
@@ -63,13 +65,15 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         TextView currencyTickerTextView;
         TextView currencyFullNameTextView;
         EditText currencyValueEditText;
+        RecyclerView recyclerView;
 
-        ViewHolder(View itemView) {
+        ViewHolder(View itemView, RecyclerView recyclerView) {
             super(itemView);
             currencyTickerTextView = itemView.findViewById(R.id.currency_ticker_text_view);
             currencyFullNameTextView = itemView.findViewById(R.id.currency_full_name_text_view);
             currencyValueEditText = itemView.findViewById(R.id.currency_value_edit_text);
             itemView.setOnClickListener(this);
+            this.recyclerView = recyclerView;
         }
 
         @Override
@@ -79,7 +83,8 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
             Map.Entry<String, Double> removedItem = ratesList.get(position);
             ratesList.remove(position);
             ratesList.add(0, removedItem);
-            notifyDataSetChanged();
+            notifyItemMoved(position, 0);
+            recyclerView.scrollToPosition(0);
         }
     }
 

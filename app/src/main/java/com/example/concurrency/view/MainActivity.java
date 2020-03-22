@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView(CurrencyMarketDataModel marketData) {
-        CurrencyRecyclerViewAdapter adapter = new CurrencyRecyclerViewAdapter(MainActivity.this, new CurrencyMarketDataWrapper(marketData));
-        adapter.setClickListener((view, position) -> Toast.makeText(MainActivity.this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show());
         RecyclerView recyclerView = findViewById(R.id.currency_recycler_view);
+        CurrencyRecyclerViewAdapter adapter = new CurrencyRecyclerViewAdapter(MainActivity.this, new CurrencyMarketDataWrapper(marketData), recyclerView);
+        adapter.setClickListener((view, position) -> Toast.makeText(MainActivity.this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show());
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.addItemDecoration(new MarginItemDecoration(15));
         recyclerView.setAdapter(adapter);
