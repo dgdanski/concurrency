@@ -1,5 +1,6 @@
 package com.example.concurrency.view.recyclerView.currency;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +82,7 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
                     moveItemToTop(currentPosition);
                 }
             });
+            currencyValueEditText.setOnScrollChangeListener((editText, a, b, c, d) -> editText.clearFocus());
             itemView.setOnClickListener(this);
             this.recyclerView = recyclerView;
         }
