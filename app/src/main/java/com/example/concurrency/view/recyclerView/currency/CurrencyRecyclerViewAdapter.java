@@ -14,18 +14,23 @@ import com.example.concurrency.model.CurrencyMarketDataWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import static com.example.concurrency.controller.Utils.round;
 
 public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRecyclerViewAdapter.ViewHolder> {
 
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
-    private CurrencyMarketDataWrapper currencyMarketDataWrapper;
+    private LinkedList<Map.Entry<String, Double>> ratesList = new LinkedList<>();
 
     // data is passed into the constructor
     public CurrencyRecyclerViewAdapter(Context context, CurrencyMarketDataWrapper currencyMarketDataWrapper) {
         this.mInflater = LayoutInflater.from(context);
-        this.currencyMarketDataWrapper = currencyMarketDataWrapper;
+        HashMap<String, Double> rates = currencyMarketDataWrapper.getAllRates();
+        ratesList.addAll(rates.entrySet());
     }
 
     // inflates the row layout from xml when needed
@@ -39,17 +44,17 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String currencyFullName = currencyMarketDataWrapper.getCurrencyNameByIndex(position);
+        String currencyFullName = ratesList.get(position).getKey();
         holder.currencyTickerTextView.setText(currencyFullName);
         holder.currencyFullNameTextView.setText(currencyFullName);
-        Double rate = currencyMarketDataWrapper.getRateByIndex(position);
+        Double rate = ratesList.get(position).getValue();
         holder.currencyValueEditText.setText(String.valueOf(round(rate * 1, 2)));
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return currencyMarketDataWrapper.getAllRates().size();
+        return ratesList.size();
     }
 
 
@@ -70,6 +75,11 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         @Override
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            int position = getAdapterPosition();
+            Map.Entry<String, Double> removedItem = ratesList.get(position);
+            ratesList.remove(position);
+            ratesList.add(0, removedItem);
+            notifyDataSetChanged();
         }
     }
 
