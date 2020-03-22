@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.concurrency.R;
+import com.example.concurrency.controller.Utils;
 import com.example.concurrency.controller.server.MarketDataAsyncTask;
 import com.example.concurrency.model.CurrencyMarketDataModel;
 import com.example.concurrency.model.CurrencyMarketDataWrapper;
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.addItemDecoration(new MarginItemDecoration(15));
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (oldScrollY != 0) {
+                Utils.hideKeyboard(MainActivity.this);
+            }
+        });
     }
 
     private void subscribe(LiveDataTimerViewModel liveDataTimerViewModel) {
