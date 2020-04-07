@@ -1,5 +1,6 @@
 package com.example.concurrency.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CurrencyMarketDataModel {
@@ -10,7 +11,10 @@ public class CurrencyMarketDataModel {
         return baseCurrency;
     }
 
-    public Map<String, Double> getRates() {
-        return rates;
+    public LinkedHashMap<String, Double> getRates() {
+        LinkedHashMap<String, Double> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put(baseCurrency, 1.0);
+        linkedHashMap.putAll(rates);
+        return linkedHashMap;
     }
 }
