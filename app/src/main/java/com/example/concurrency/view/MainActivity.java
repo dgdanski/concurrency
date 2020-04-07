@@ -21,6 +21,8 @@ import com.example.concurrency.view.recyclerView.currency.CurrencyRecyclerViewAd
 
 public class MainActivity extends AppCompatActivity {
 
+    private CurrencyRecyclerViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,21 +47,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecyclerView(CurrencyMarketDataModel marketData) {
         RecyclerView recyclerView = findViewById(R.id.currency_recycler_view);
-        CurrencyRecyclerViewAdapter adapter = new CurrencyRecyclerViewAdapter(MainActivity.this, new CurrencyMarketDataWrapper(marketData), recyclerView);
-        adapter.setClickListener((view, position) -> Toast.makeText(MainActivity.this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show());
+        adapter = new CurrencyRecyclerViewAdapter(MainActivity.this, new CurrencyMarketDataWrapper(marketData), recyclerView);
+//        adapter.setClickListener((view, position) -> Toast.makeText(MainActivity.this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show());
+        adapter.setHasStableIds(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.addItemDecoration(new MarginItemDecoration(15));
         recyclerView.setAdapter(adapter);
         recyclerView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (oldScrollY != 0) {
-                Utils.hideKeyboard(MainActivity.this);
+//                Utils.hideKeyboard(MainActivity.this);
             }
         });
     }
 
     private void subscribe(LiveDataTimerViewModel liveDataTimerViewModel) {
         final Observer<Long> elapsedTimeObserver = timeInSeconds -> {
-            
+            MarketDataAsyncTask asyncTask = new MarketDataAsyncTask(new MarketDataAsyncTask.RequestStateListener() {
+                @Override
+                public void onSuccess(CurrencyMarketDataModel marketData) {
+                    adapter.updateRates(new CurrencyMarketDataWrapper(marketData));
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GBP");
         };
 
         liveDataTimerViewModel.getElapsedTime().observe(this, elapsedTimeObserver);

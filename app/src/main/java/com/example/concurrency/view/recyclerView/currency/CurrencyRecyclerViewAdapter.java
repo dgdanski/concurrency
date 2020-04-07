@@ -39,6 +39,17 @@ public class CurrencyRecyclerViewAdapter extends RecyclerView.Adapter<CurrencyRe
         this.context = context;
     }
 
+    private EditText editTextFromFirstItem;
+
+    public void updateRates(CurrencyMarketDataWrapper newMarketData) {
+        for (Map.Entry<String, Double> entry : ratesList) {
+            Double newRate = newMarketData.getAllRates().get(entry.getKey());
+            entry.setValue(newRate);
+        }
+        int cursorPosition = editTextFromFirstItem.getSelectionEnd();
+        editTextFromFirstItem.setText(String.valueOf(round(firstItemRate * 1, 2)));
+        editTextFromFirstItem.setSelection(cursorPosition);
+    }
     // inflates the row layout from xml when needed
     @NotNull
     @Override
